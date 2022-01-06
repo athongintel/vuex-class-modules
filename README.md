@@ -1,3 +1,7 @@
+## 1.0.6
+
+-   build proxy with local functions, remove @Compute decorator
+
 ## 1.0.5
 
 -   test build proxy with local functions

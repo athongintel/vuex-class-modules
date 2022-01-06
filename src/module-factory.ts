@@ -2,12 +2,6 @@ import { Store, Module as StoreModule, GetterTree, ActionContext, Dispatch, Comm
 import { WatchOptions } from "vue";
 import { VuexModule } from "./VuexModule";
 
-type Compute<S> = (state: S, payload?: any) => any;
-
-export interface ComputeTree<S> {
-    [key: string]: Compute<S>;
-}
-
 export interface ModuleOptions {
     generateMutationSetters?: boolean;
 }
@@ -21,7 +15,6 @@ export interface IVuexModule extends Dictionary<any> {
     __options: RegisterOptions;
 }
 export interface IModulePrototype {
-    __computes?: Dictionary<(payload?: any) => any>;
     __mutations?: Dictionary<(payload?: any) => void>;
     __actions?: Dictionary<(payload?: any) => Promise<void>>;
 }
@@ -34,7 +27,6 @@ interface ModuleDefinition {
     moduleRefs: Dictionary<VuexModule>;
     getters: Dictionary<() => void>;
     mutations: Dictionary<(payload?: any) => void>;
-    computes: Dictionary<(payload?: any) => any>;
     actions: Dictionary<(payload?: any) => Promise<void>>;
     localFunctions: Dictionary<(...args: any[]) => any>;
 }
@@ -61,7 +53,6 @@ export class VuexClassModuleFactory {
         moduleRefs: {},
         getters: {},
         mutations: {},
-        computes: {},
         actions: {},
         localFunctions: {},
     };
@@ -88,10 +79,8 @@ export class VuexClassModuleFactory {
 
         const actionKeys = Object.keys(classModule.__actions || {});
         const mutationKeys = Object.keys(classModule.__mutations || {});
-        const computeKeys = Object.keys(classModule.__computes || {});
         const isAction = (key: string) => actionKeys.indexOf(key) !== -1;
         const isMutation = (key: string) => mutationKeys.indexOf(key) !== -1;
-        const isCompute = (key: string) => computeKeys.indexOf(key) !== -1;
 
         for (const module of getModulePrototypes(classModule)) {
             for (const key of Object.getOwnPropertyNames(module.prototype)) {
@@ -108,16 +97,12 @@ export class VuexClassModuleFactory {
                 if (isMutation(key) && !(key in this.definition.mutations) && descriptor.value) {
                     this.definition.mutations[key] = module.prototype[key];
                 }
-                if (isCompute(key) && !(key in this.definition.computes) && descriptor.value) {
-                    this.definition.computes[key] = module.prototype[key];
-                }
 
                 const isHelperFunction =
                     descriptor.value &&
                     typeof module.prototype[key] === "function" &&
                     !isAction(key) &&
                     !isMutation(key) &&
-                    !isCompute(key) &&
                     key !== "constructor";
 
                 if (isHelperFunction && !(key in this.definition.localFunctions)) {
@@ -164,16 +149,6 @@ export class VuexClassModuleFactory {
                 vuexModule.mutations![this.getMutationSetterName(stateKey)] = mutation;
             }
         }
-
-        // computes
-        mapValues(vuexModule.mutations!, this.definition.computes, (compute) => {
-            return (state: any, payload: any) => {
-                const thisObj = this.buildThisProxy({
-                    state,
-                });
-                return compute.call(thisObj, payload);
-            };
-        });
 
         // actions
         mapValues(vuexModule.actions!, this.definition.actions, (action) => {
