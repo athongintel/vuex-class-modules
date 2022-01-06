@@ -8,10 +8,6 @@ export interface ComputeTree<S> {
     [key: string]: Compute<S>;
 }
 
-interface VuexStoreModule<S, R> extends StoreModule<S, R> {
-    computes?: ComputeTree<S>;
-}
-
 export interface ModuleOptions {
     generateMutationSetters?: boolean;
 }
@@ -132,11 +128,10 @@ export class VuexClassModuleFactory {
     }
 
     registerVuexModule() {
-        const vuexModule: VuexStoreModule<any, any> = {
+        const vuexModule: StoreModule<any, any> = {
             state: this.definition.state,
             getters: {},
             mutations: {},
-            computes: {},
             actions: {},
             namespaced: true,
         };
@@ -171,7 +166,7 @@ export class VuexClassModuleFactory {
         }
 
         // computes
-        mapValues(vuexModule.computes!, this.definition.computes, (compute) => {
+        mapValues(vuexModule.mutations!, this.definition.computes, (compute) => {
             return (state: any, payload: any) => {
                 const thisObj = this.buildThisProxy({
                     state,
