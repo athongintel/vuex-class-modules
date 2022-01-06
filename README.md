@@ -1,3 +1,7 @@
+## 1.0.5
+
+-   test build proxy with local functions
+
 ## 1.0.4
 
 -   test @Mutation return value

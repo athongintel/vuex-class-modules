@@ -223,8 +223,8 @@ export class VuexClassModuleFactory {
             state: store.state[name],
             stateSetter,
             useNamespaceKey: true,
-            excludeModuleRefs: true,
-            excludeLocalFunctions: true,
+            excludeModuleRefs: false,
+            excludeLocalFunctions: false,
         });
 
         // watch API
