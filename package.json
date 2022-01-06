@@ -1,6 +1,6 @@
 {
     "name": "vuex-modules-decorators",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Typescript class decorators for class-style vuex modules.",
     "main": "commonjs/index.js",
     "module": "lib/index.js",
@@ -21,13 +21,7 @@
         "test": "jest --config jestconfig.json",
         "build:es2015": "tsc",
         "build:commonjs": "tsc -m commonjs --outDir ./commonjs",
-        "lint": "tslint -p tsconfig.json --fix",
-        "example": "npm run build && webpack --config ./example/webpack.config.js",
-        "prepare": "npm run build",
-        "prepublishOnly": "npm test && npm run lint",
-        "preversion": "npm run lint",
-        "version": "git add -A src",
-        "postversion": "git push && git push --tags"
+        "lint": "tslint -p tsconfig.json --fix"
     },
     "keywords": [
         "vue",
