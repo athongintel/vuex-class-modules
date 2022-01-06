@@ -1,68 +1,61 @@
 {
-  "name": "vuex-class-modules",
-  "version": "1.3.0",
-  "description": "Typescript class decorators for class-style vuex modules.",
-  "main": "commonjs/index.js",
-  "module": "lib/index.js",
-  "exports": {
-    ".": {
-      "require": "./commonjs/index.js",
-      "default": "./lib/index.js"
+    "name": "vuex-modules-decorators",
+    "version": "1.0.0",
+    "description": "Typescript class decorators for class-style vuex modules.",
+    "main": "commonjs/index.js",
+    "module": "lib/index.js",
+    "exports": {
+        ".": {
+            "require": "./commonjs/index.js",
+            "default": "./lib/index.js"
+        }
+    },
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib",
+        "commonjs"
+    ],
+    "scripts": {
+        "build": "npm run build:es2015 && npm run build:commonjs",
+        "push": "npm run build && npm publish && git push",
+        "test": "jest --config jestconfig.json",
+        "build:es2015": "tsc",
+        "build:commonjs": "tsc -m commonjs --outDir ./commonjs",
+        "lint": "tslint -p tsconfig.json --fix",
+        "example": "npm run build && webpack --config ./example/webpack.config.js",
+        "prepare": "npm run build",
+        "prepublishOnly": "npm test && npm run lint",
+        "preversion": "npm run lint",
+        "version": "git add -A src",
+        "postversion": "git push && git push --tags"
+    },
+    "keywords": [
+        "vue",
+        "vuex",
+        "typescript",
+        "class",
+        "decorators"
+    ],
+    "author": "athongintel",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "12.12.2",
+        "@types/jest": "^26.0.14",
+        "@types/webpack-env": "^1.13.9",
+        "css-loader": "^3.2.0",
+        "jest": "^26.4.0",
+        "ts-jest": "^26.4.0",
+        "ts-loader": "^6.2.0",
+        "tslint": "^5.20.0",
+        "tslint-config-prettier": "^1.18.0",
+        "tslint-plugin-prettier": "^2.0.1",
+        "typescript": "^3.8.4",
+        "vue": "^2.6.10",
+        "vue-class-component": "^7.1.0",
+        "vue-loader": "^15.7.0",
+        "vue-template-compiler": "^2.6.10",
+        "vuex": "^3.1.1",
+        "webpack": "^4.44.2",
+        "webpack-cli": "^3.3.12"
     }
-  },
-  "types": "lib/index.d.ts",
-  "files": [
-    "lib",
-    "commonjs"
-  ],
-  "scripts": {
-    "test": "jest --config jestconfig.json",
-    "build": "npm run build:es2015 && npm run build:commonjs",
-    "build:es2015": "tsc",
-    "build:commonjs": "tsc -m commonjs --outDir ./commonjs",
-    "lint": "tslint -p tsconfig.json --fix",
-    "example": "npm run build && webpack --config ./example/webpack.config.js",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint",
-    "version": "git add -A src",
-    "postversion": "git push && git push --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gertqin/vuex-class-modules.git"
-  },
-  "keywords": [
-    "vue",
-    "vuex",
-    "typescript",
-    "class",
-    "decorators"
-  ],
-  "author": "Gert Qin Hansen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gertqin/vuex-class-modules/issues"
-  },
-  "homepage": "https://github.com/gertqin/vuex-class-modules#readme",
-  "devDependencies": {
-    "@types/node": "12.12.2",
-    "@types/jest": "^26.0.14",
-    "@types/webpack-env": "^1.13.9",
-    "css-loader": "^3.2.0",
-    "jest": "^26.4.0",
-    "ts-jest": "^26.4.0",
-    "ts-loader": "^6.2.0",
-    "tslint": "^5.20.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.8.4",
-    "vue": "^2.6.10",
-    "vue-class-component": "^7.1.0",
-    "vue-loader": "^15.7.0",
-    "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.1.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
-  }
 }

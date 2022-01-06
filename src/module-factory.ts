@@ -2,6 +2,16 @@ import { Store, Module as StoreModule, GetterTree, ActionContext, Dispatch, Comm
 import { WatchOptions } from "vue";
 import { VuexModule } from "./VuexModule";
 
+type Compute<S> = (state: S, payload?: any) => any;
+
+export interface ComputeTree<S> {
+  [key: string]: Compute<S>;
+}
+
+interface VuexStoreModule<S, R> extends StoreModule<S, R> {
+  computes?: ComputeTree<S>;
+}
+
 export interface ModuleOptions {
   generateMutationSetters?: boolean;
 }
@@ -15,6 +25,7 @@ export interface IVuexModule extends Dictionary<any> {
   __options: RegisterOptions;
 }
 export interface IModulePrototype {
+  __computes?: Dictionary<(payload?: any) => any>;
   __mutations?: Dictionary<(payload?: any) => void>;
   __actions?: Dictionary<(payload?: any) => Promise<void>>;
 }
@@ -27,6 +38,7 @@ interface ModuleDefinition {
   moduleRefs: Dictionary<VuexModule>;
   getters: Dictionary<() => void>;
   mutations: Dictionary<(payload?: any) => void>;
+  computes: Dictionary<(payload?: any) => any>;
   actions: Dictionary<(payload?: any) => Promise<void>>;
   localFunctions: Dictionary<(...args: any[]) => any>;
 }
@@ -53,6 +65,7 @@ export class VuexClassModuleFactory {
     moduleRefs: {},
     getters: {},
     mutations: {},
+    computes: {},
     actions: {},
     localFunctions: {}
   };
@@ -113,10 +126,11 @@ export class VuexClassModuleFactory {
   }
 
   registerVuexModule() {
-    const vuexModule: StoreModule<any, any> = {
+    const vuexModule: VuexStoreModule<any, any> = {
       state: this.definition.state,
       getters: {},
       mutations: {},
+      computes: {},
       actions: {},
       namespaced: true
     };
@@ -149,6 +163,16 @@ export class VuexClassModuleFactory {
         vuexModule.mutations![this.getMutationSetterName(stateKey)] = mutation;
       }
     }
+
+    // computes
+    mapValues(vuexModule.computes!, this.definition.computes, compute => {
+      return (state: any, payload: any) => {
+        const thisObj = this.buildThisProxy({
+          state
+        });
+        return compute.call(thisObj, payload);
+      };
+    });
 
     // actions
     mapValues(vuexModule.actions!, this.definition.actions, action => {
