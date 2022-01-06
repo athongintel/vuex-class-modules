@@ -153,7 +153,7 @@ export class VuexClassModuleFactory {
                         state[stateField] = val;
                     },
                 });
-                mutation.call(thisObj, payload);
+                return mutation.call(thisObj, payload);
             };
         });
         if (this.moduleOptions.generateMutationSetters) {

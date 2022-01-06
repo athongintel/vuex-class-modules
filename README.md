@@ -1,3 +1,7 @@
+## 1.0.4
+
+-   test @Mutation return value
+
 ## 1.0.3
 
 -   fix Compute cannot access `this` fields
